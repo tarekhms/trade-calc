@@ -18,6 +18,46 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+ion-input.custom {
+  --background: #373737;
+  --border-radius: 5px;
+  --highlight-color: #646cff;
+  --font-size: 5px;
+
+  /* --padding-bottom: 10px; */
+  --padding-end: 10px;
+  --padding-start: 10px;
+  /* --padding-top: 10px; */
+
+  width:30%;
+  display: inline-block;
+  margin: 2px;
+  text-align: left;
+  border: 1px #444 solid !important;
+  border-radius: 5px;
+}
+
+.label-text{
+  font-size: 3.7vw;
+}
+.input-wrapper.sc-ion-input-ios:focus-within  {
+  border: 1px #646cff solid;
+}
+
+ion-radio-group{
+  text-align: left !important;
+}
+.label-text-wrapper{
+  margin-right:15px;
+}
+.radiog{
+  padding-right: 16px;
+  margin-left: 10px;
+}
+.radiog2{
+  padding-left: 60px;
+}
+
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -28,8 +68,14 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
+  .spin {
     animation: logo-spin infinite 20s linear;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  ion-input.custom {
+    --background: #ffffff;
   }
 }
 

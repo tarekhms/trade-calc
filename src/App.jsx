@@ -8,18 +8,29 @@ setupIonicReact();
 function App() {
   const [count, setCount] = useState(0)
   const [open, setOpen] = useState(false);
-  const [eq, setEq] = useState('buy');
+  const [eq, setEq] = useState('liquidation');
   const [result, setResult] = useState(0);
-  const [balance, setBalance] = useState(1);
+  const [result2, setResult2] = useState(0);
+  const [balance, setBalance] = useState(0);
   const [position, setPosition] = useState(0);
+  const [balance2, setBalance2] = useState(0);
+  const [position2, setPosition2] = useState(0);
   const [assets, setAssets] = useState(0);
   const [order, setOrder] = useState("-1");
 
   useEffect(() => {
-    setResult((position + Number(order)*(assets / balance)).toFixed(3));
+    eq == "liquidation" && setResult((position + Number(order)*(assets / balance)).toFixed(3));
+    if(eq == "newposition") {
+      const newposition = balance!=0 && balance2!=0 ? ((position * balance) + (position2 * balance2)) / (balance + balance2) : position;
+      const assets2 = position2!=0 && balance2!=0 ? assets - (balance * ((-1 * order) * (position - position2))) : assets;
+      setResult((newposition + Number(order)*(assets2 / balance)).toFixed(3));
+      setResult2(newposition.toFixed(3));
+      console.log(newposition, assets2, balance, balance2);
+      
+    }
     // console.log(order);
     
-  }, [position, assets, balance, order]);
+  }, [assets, position, balance, position2, balance2, order, eq]);
 
   const handleClick = (event) => {
     const input = event.currentTarget;
@@ -39,16 +50,11 @@ function App() {
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <img src={reactLogo} className="logo spin react" alt="React logo" />
       </div>
       <h1>Trade Calculator</h1>
 
-      {eq=='buy' ?
+      {eq=='liquidation' ?
       <p>
         Liquidation Price: {result}
         <br/>
@@ -62,8 +68,26 @@ function App() {
       <IonInput label="Position" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setPosition(Number(e.target.value))}></IonInput>
       <IonInput label="Coin Balance" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setBalance(Number(e.target.value))}></IonInput>
       </p>
-      : (eq=='sell' ? 
-      <p> Sell </p> 
+      : (eq=='newposition' ? 
+        <p>
+        New Position: {result2}
+        <br/>
+        Liquidation Price: {result}
+        <br/>
+        <br/>
+        <IonRadioGroup value={order} onIonChange={e => setOrder(e.detail.value)}>
+          <IonRadio value="-1" class="radiog">Long</IonRadio>
+          <IonRadio value="1" class="radiog2">Short</IonRadio>
+        </IonRadioGroup>
+        <br/><br/>
+        <IonInput label="Total Assets" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setAssets(Number(e.target.value))}></IonInput>
+        <br/>
+        <IonInput label="Old Position" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setPosition(Number(e.target.value))}></IonInput>
+        <IonInput label="Old Balance" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setBalance(Number(e.target.value))}></IonInput>
+        <br/>
+        <IonInput label="New Position" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setPosition2(Number(e.target.value))}></IonInput>
+        <IonInput label="New Balance" labelPlacement="floating" placeholder="0" fill="outline" type="number" class="custom" onclick={handleClick} onKeyUp={(e)=> setBalance2(Number(e.target.value))}></IonInput>
+      </p>
       : 
       <p> Cancel </p>
       )} 
@@ -75,13 +99,13 @@ function App() {
               {
                 text: 'Liquidation Price',
                 data: {
-                  action: 'buy',
+                  action: 'liquidation',
                 },
               },
               {
                 text: 'New Position Price',
                 data: {
-                  action: 'sell',
+                  action: 'newposition',
                 },
               },
               {
